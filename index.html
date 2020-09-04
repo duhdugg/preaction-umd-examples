@@ -1,0 +1,385 @@
+<!DOCTYPE >
+<html>
+  <head>
+    <title>Preaction UMD Example</title>
+
+    <!-- These 3 imports are required for Preaction Bootstrap Clips and Preaction Inputs -->
+    <script src="https://cdn.jsdelivr.net/npm/react@16.13.1/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@16.13.1/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prop-types@15.7.2/prop-types.min.js"></script>
+
+    <!-- react-quill needs imported only if you're using the Wysiwyg component from Preaction Inputs -->
+    <script src="https://cdn.jsdelivr.net/npm/react-quill@1.3.5/dist/react-quill.js"></script>
+
+    <!-- Preaction Bootstrap Clips UMD Bundle -->
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@preaction/bootstrap-clips@3.0.0-alpha.12/dist/preaction-bootstrap-clips.umd.js"
+    ></script>
+
+    <!-- Preaction Validation UMD Bundle -->
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@preaction/validation@2.0.5/dist/preaction-validation.umd.min.js"
+    ></script>
+
+    <!-- You can also import all Preaction Inputs by using the preaction-inputs.umd.js bundle, -->
+    <!-- but it is more likely that you will want to import only the components you're using. -->
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@3.0.0-alpha.11/dist/preaction-inputs.form.umd.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@3.0.0-alpha.11/dist/preaction-inputs.input.umd.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@3.0.0-alpha.11/dist/preaction-inputs.select.umd.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@3.0.0-alpha.11/dist/preaction-inputs.textarea.umd.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@3.0.0-alpha.11/dist/preaction-inputs.wysiwyg.umd.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@3.0.0-alpha.11/dist/preaction-inputs.checkbox.umd.js"
+    ></script>
+
+    <!-- Bootstrap 4 CSS is required or Preaction Bootstrap Clips and Preaction Inputs, but you may use your own custom build of it -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      type="text/css"
+    />
+
+    <!-- If you are using the Wysiwyg component from Preaction Inputs, you must import the Quill theme CSS. -->
+    <!-- Import both snow and bubble only if your application uses both or switches between the two. -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/react-quill@1.3.5/dist/quill.snow.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/react-quill@1.3.5/dist/quill.bubble.css"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      const { Boilerplate, Alert, Card, Spinner } = window[
+        "@preaction/bootstrap-clips"
+      ];
+
+      const { emailValidator } = window["@preaction/validation"];
+
+      /*
+       * if we had imported the full bundle for Preaction Inputs,
+       * the global variable for all of these would be window["@preaction/inputs"]
+       */
+      const { Form } = window["@preaction/inputs-form"];
+      const { Checkbox } = window["@preaction/inputs-checkbox"];
+      const { Input } = window["@preaction/inputs-input"];
+      const { Select } = window["@preaction/inputs-select"];
+      const { Textarea } = window["@preaction/inputs-textarea"];
+      const { Wysiwyg } = window["@preaction/inputs-wysiwyg"];
+
+      const e = React.createElement;
+      const rand = Math.random;
+
+      function App() {
+        const [name, setName] = React.useState("");
+        const [email, setEmail] = React.useState("");
+        const [favoriteSuperhero, setFavoriteSuperhero] = React.useState("");
+        const [favTacoIngs, setFavTacoIngs] = React.useState([]);
+        const [bio, setBio] = React.useState("");
+        const [comprehension, setComprehension] = React.useState("");
+        const [formState, setFormState] = React.useState("");
+        const [wysiwygTheme, setWysiwygTheme] = React.useState("snow");
+
+        return e(Boilerplate, {
+          jumbotron: e("div", {
+            children: [
+              e("h1", {
+                key: rand(),
+                className: "display-4",
+                children: "Preaction UMD Example",
+              }),
+              e("p", {
+                key: rand(),
+                style: { fontSize: "1.5em" },
+                children:
+                  "This is an example HTML page that uses the UMD builds of Preaction Inputs, Bootstrap Clips, and Validation libraries to create a registration form using React without JSX.",
+              }),
+              e("p", {
+                key: rand(),
+                className: "mb-0",
+                style: { fontSize: "1.25em" },
+                children: [
+                  e("a", {
+                    key: rand(),
+                    href:
+                      "https://github.com/duhdugg/preaction-umd-examples/blob/master/index.html",
+                    children:
+                      "View the source of this page to see how it's done.",
+                  }),
+                ],
+              }),
+            ],
+          }),
+          children: [
+            formState === ""
+              ? e(Form, {
+                  key: "form",
+                  name: "join-form",
+                  noValidate: true,
+                  onSubmit: function (event) {
+                    event.preventDefault();
+                    if (
+                      document
+                        .querySelector("form[name='join-form']")
+                        .checkValidity()
+                    ) {
+                      setFormState("submitting");
+                      setTimeout(function () {
+                        setFormState("done");
+                      }, 1000);
+                    }
+                  },
+                  children: [
+                    e(Card, {
+                      key: "about-you-card",
+                      header: "About You",
+                      headerTheme: "dark",
+                      footer: e("div", {
+                        className: "btn-group",
+                        children: [
+                          e("button", {
+                            key: rand(),
+                            type: "button",
+                            className: "btn btn-secondary",
+                            children: "Toggle Wysiwyg Theme",
+                            onClick: function () {
+                              setWysiwygTheme(
+                                wysiwygTheme === "snow" ? "bubble" : "snow"
+                              );
+                            },
+                          }),
+                          e("button", {
+                            key: rand(),
+                            className: "btn btn-primary",
+                            type: "button",
+                            children: "Load Example",
+                            onClick: function () {
+                              setName("Robert Paulsen");
+                              setEmail("meatloaf@example.com");
+                              setFavoriteSuperhero("Tyler Durden");
+                              setFavTacoIngs(["beans", "cheese"]);
+                              setBio(
+                                "<p><i>My name is Bob. I was a juicer, you know...</i></p>"
+                              );
+                            },
+                          }),
+                          e("button", {
+                            key: rand(),
+                            className: "btn btn-success",
+                            type: "submit",
+                            children: "Submit",
+                          }),
+                        ],
+                      }),
+                      footerTheme: "dark",
+                      children: [
+                        e(Input, {
+                          key: "name-input",
+                          label: "Your Name",
+                          name: "name",
+                          required: true,
+                          value: name,
+                          valueHandler: setName,
+                        }),
+                        e(Input, {
+                          key: "email-input",
+                          label: "Your Email",
+                          type: "email",
+                          name: "email",
+                          required: true,
+                          validator: emailValidator,
+                          value: email,
+                          valueHandler: setEmail,
+                        }),
+                        e("div", {
+                          key: "form-row",
+                          className: "row",
+                          children: [
+                            e(Card, {
+                              key: "favorites-card",
+                              column: true,
+                              width: 1 / 2,
+                              header: "Favorites",
+                              headerTheme: "blue",
+                              children: [
+                                e(Select, {
+                                  key: "favorite-superhero-input",
+                                  label: "Favorite Superhero",
+                                  name: "favorite-superhero",
+                                  required: true,
+                                  value: favoriteSuperhero,
+                                  valueHandler: setFavoriteSuperhero,
+                                  children: [
+                                    "",
+                                    "bat guy",
+                                    "big green angry guy",
+                                    "iron guy",
+                                    "mean guy",
+                                    "thunder guy",
+                                    "Tyler Durden",
+                                  ].map(function (choice) {
+                                    return e("option", {
+                                      key: rand(),
+                                      children: choice,
+                                    });
+                                  }),
+                                }),
+                                e(Select, {
+                                  key: "favorite-taco-ingredients",
+                                  label: "Favorite Taco Ingredients",
+                                  name: "favorite-taco-ingredients",
+                                  required: true,
+                                  multiple: true,
+                                  value: favTacoIngs,
+                                  valueHandler: setFavTacoIngs,
+                                  children: [
+                                    "",
+                                    "beans",
+                                    "cheese",
+                                    "guacamole",
+                                    "hot sauce",
+                                    "lettuce",
+                                    "meat",
+                                    "mushrooms",
+                                    "peppers",
+                                    "shells",
+                                    "sour cream",
+                                  ].map(function (choice) {
+                                    return e("option", {
+                                      key: rand(),
+                                      children: choice,
+                                    });
+                                  }),
+                                }),
+                              ],
+                            }),
+                            e(Card, {
+                              key: "bio-card",
+                              column: true,
+                              width: 1 / 2,
+                              header: "Bio",
+                              headerTheme: "red",
+                              children: [
+                                e(Wysiwyg, {
+                                  key: "bio",
+                                  label: "Tell us about yourself",
+                                  value: bio,
+                                  valueHandler: setBio,
+                                  theme: wysiwygTheme,
+                                }),
+                                e(Checkbox, {
+                                  key: "comprehension",
+                                  label:
+                                    "I understand the first rule of this club.",
+                                  required: true,
+                                  checked: comprehension,
+                                  valueHandler: setComprehension,
+                                }),
+                              ],
+                            }),
+                          ],
+                        }),
+                      ],
+                    }),
+                  ],
+                })
+              : "",
+            formState === "submitting"
+              ? e("div", {
+                  key: rand(),
+                  className: "mb-3",
+                  children: e(Spinner, {
+                    key: rand(),
+                    size: 5,
+                    children: "Submitting...",
+                    fontSize: 3,
+                  }),
+                })
+              : "",
+            formState === "done"
+              ? e(Alert, {
+                  key: rand(),
+                  theme: "green",
+                  children: e("div", {
+                    key: rand(),
+                    children: [
+                      e("h2", { key: rand(), children: "Thank you" }),
+                      e("p", {
+                        key: rand(),
+                        children:
+                          "Your request has been submitted. We may make contact when you least expect it.",
+                      }),
+                      e("button", {
+                        key: rand(),
+                        className: "btn btn-secondary",
+                        onClick: function () {
+                          setName("");
+                          setEmail("");
+                          setFavoriteSuperhero("");
+                          setFavTacoIngs([]);
+                          setBio("");
+                          setComprehension(false);
+                          setFormState("");
+                        },
+                        children: "Go Back",
+                      }),
+                    ],
+                  }),
+                })
+              : "",
+            e(Card, {
+              key: Math.random(),
+              header: "License",
+              headerTheme: "yellow",
+              children: e(Textarea, {
+                readOnly: true,
+                value: `
+Copyright (c) 2020 Doug Elkin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.`,
+              }),
+            }),
+          ],
+        });
+      }
+      ReactDOM.render(e(App, {}), document.getElementById("root"));
+    </script>
+  </body>
+</html>

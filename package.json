@@ -1,0 +1,23 @@
+{
+  "name": "preaction-umd-examples",
+  "version": "1.0.0",
+  "description": "examples of how to use UMD bundles of Preaction Inputs, Bootstrap Clips, and Validation libraries",
+  "private": true,
+  "devDependencies": {
+    "eslint": "^7.8.1",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-html": "^6.0.3",
+    "prettier": "^2.1.1"
+  },
+  "eslintConfig": {
+    "plugins": [
+      "html"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2020
+    }
+  },
+  "scripts": {
+    "test": "eslint --max-warnings 0 index.html && prettier -c index.html"
+  }
+}
