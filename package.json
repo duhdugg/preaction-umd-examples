@@ -4,10 +4,10 @@
   "description": "examples of how to use UMD bundles of Preaction Inputs, Bootstrap Clips, and Validation libraries",
   "private": true,
   "devDependencies": {
-    "eslint": "^7.8.1",
+    "eslint": "^7.9.0",
     "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-html": "^6.0.3",
-    "prettier": "^2.1.1"
+    "eslint-plugin-html": "^6.1.0",
+    "prettier": "^2.1.2"
   },
   "eslintConfig": {
     "plugins": [
