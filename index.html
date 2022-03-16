@@ -6,65 +6,61 @@
     <!-- These 3 imports are required for Preaction Bootstrap Clips and Preaction Inputs -->
     <script src="https://cdn.jsdelivr.net/npm/react@17.0.2/umd/react.development.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/react-dom@17.0.2/umd/react-dom.development.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prop-types@15.7.2/prop-types.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prop-types@15.8.1/prop-types.min.js"></script>
     <!-- bootstrap javascript is required for Modal, Nav, and NavBar -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 
     <!-- react-quill needs imported only if you're using the Wysiwyg component from Preaction Inputs -->
     <script src="https://cdn.jsdelivr.net/npm/react-quill@1.3.5/dist/react-quill.js"></script>
 
     <!-- Preaction Bootstrap Clips UMD Bundle -->
-    <!-- <script -->
-    <!--   type="text/javascript" -->
-    <!--   src="https://cdn.jsdelivr.net/npm/@preaction/bootstrap-clips@5.0.0-alpha.10/dist/preaction-bootstrap-clips.umd.js" -->
-    <!-- ></script> -->
     <script
       type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/@preaction/bootstrap-clips@5.0.0-alpha.11/dist/preaction-bootstrap-clips.umd.js"
+      src="https://cdn.jsdelivr.net/npm/@preaction/bootstrap-clips@5.0.0-alpha.22/dist/preaction-bootstrap-clips.umd.js"
     ></script>
 
     <!-- Preaction Validation UMD Bundle -->
     <script
       type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/@preaction/validation@2.0.5/dist/preaction-validation.umd.min.js"
+      src="https://cdn.jsdelivr.net/npm/@preaction/validation@2.0.6/dist/preaction-validation.umd.min.js"
     ></script>
 
     <!-- You can also import all Preaction Inputs by using the preaction-inputs.umd.js bundle, -->
     <!-- but it is more likely that you will want to import only the components you're using. -->
     <script
       type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@5.0.0-alpha.4/dist/preaction-inputs.form.umd.js"
+      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@5.0.0-alpha.9/dist/preaction-inputs.form.umd.js"
     ></script>
     <script
       type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@5.0.0-alpha.4/dist/preaction-inputs.input.umd.js"
+      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@5.0.0-alpha.9/dist/preaction-inputs.input.umd.js"
     ></script>
     <script
       type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@5.0.0-alpha.4/dist/preaction-inputs.select.umd.js"
+      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@5.0.0-alpha.9/dist/preaction-inputs.select.umd.js"
     ></script>
     <script
       type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@5.0.0-alpha.4/dist/preaction-inputs.textarea.umd.js"
+      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@5.0.0-alpha.9/dist/preaction-inputs.textarea.umd.js"
     ></script>
     <script
       type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@5.0.0-alpha.4/dist/preaction-inputs.wysiwyg.umd.js"
+      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@5.0.0-alpha.9/dist/preaction-inputs.wysiwyg.umd.js"
     ></script>
     <script
       type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@5.0.0-alpha.4/dist/preaction-inputs.checkbox.umd.js"
+      src="https://cdn.jsdelivr.net/npm/@preaction/inputs@5.0.0-alpha.9/dist/preaction-inputs.checkbox.umd.js"
     ></script>
 
     <!-- Bootstrap 5 CSS is required or Preaction Bootstrap Clips and Preaction Inputs, but you may use your own custom build of it -->
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
       type="text/css"
     />
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@preaction/bootstrap-clips@5.0.0-alpha.11/dist/preaction-bootstrap-clips.css"
+      href="https://cdn.jsdelivr.net/npm/@preaction/bootstrap-clips@5.0.0-alpha.22/dist/preaction-bootstrap-clips.css"
       type="text/css"
     />
 
@@ -93,7 +89,7 @@
   <body>
     <div id="root"></div>
     <script>
-      const { Boilerplate, Alert, Card, Spinner } =
+      const { Boilerplate, Alert, Card, Spinner, Table } =
         window["@preaction/bootstrap-clips"];
 
       const { emailValidator } = window["@preaction/validation"];
@@ -121,6 +117,24 @@
         const [comprehension, setComprehension] = React.useState("");
         const [formState, setFormState] = React.useState("");
         const [wysiwygTheme, setWysiwygTheme] = React.useState("snow");
+        const [contacts, setContacts] = React.useState([]);
+        const [tableState, setTableState] = React.useState("Loading");
+
+        React.useEffect(() => {
+          fetch("https://jsonplaceholder.typicode.com/users").then(
+            (response) => {
+              if (response.ok) {
+                response.json().then((data) => {
+                  for (const user of data) {
+                    user.business = user.company.name;
+                  }
+                  setContacts(data);
+                  setTableState("ok");
+                });
+              }
+            }
+          );
+        }, []);
 
         return e(Boilerplate, {
           hero: e("div", {
@@ -144,6 +158,8 @@
                   e("a", {
                     key: rand(),
                     href: "https://github.com/duhdugg/preaction-umd-examples/blob/main/index.html",
+                    target: "_blank",
+                    rel: "noreferrer noopener",
                     children:
                       "View the source of this page to see how it's done.",
                   }),
@@ -369,29 +385,66 @@
               : "",
             e(Card, {
               key: rand(),
+              header: "Contacts",
+              headerTheme: "success",
+              className: "mb-3",
+              children: [
+                tableState === "ok"
+                  ? e("p", {
+                      key: rand(),
+                      children: [
+                        "Data provided by: ",
+                        e("a", {
+                          key: rand(),
+                          href: "https://jsonplaceholder.typicode.com",
+                          target: "_blank",
+                          rel: "noreferrer noopener",
+                          children: "https://jsonplaceholder.typicode.com",
+                        }),
+                      ],
+                    })
+                  : "",
+                tableState === "ok"
+                  ? e(Table, {
+                      key: rand(),
+                      headers: new Map()
+                        .set("username", "Alias")
+                        .set("phone", "Phone")
+                        .set("business", "Business"),
+                      rows: contacts,
+                      sort: true,
+                      filter: true,
+                      search: true,
+                      defaultSortKey: "username",
+                    })
+                  : e(Spinner, { key: rand(), children: tableState }),
+              ],
+            }),
+            e(Card, {
+              key: rand(),
               header: "License",
               headerTheme: "yellow",
               children: e(Textarea, {
                 readOnly: true,
-                value: `Copyright (c) 2020-2021 Doug Elkin
+                value: `Copyright (c) 2020-2022 Doug Elkin
 
-      Permission is hereby granted, free of charge, to any person obtaining a copy of
-      this software and associated documentation files (the "Software"), to deal in
-      the Software without restriction, including without limitation the rights to
-      use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-      of the Software, and to permit persons to whom the Software is furnished to do
-      so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
 
-      The above copyright notice and this permission notice shall be included in all
-      copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-      IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-      FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-      AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-      LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-      OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-      SOFTWARE.`,
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.`,
               }),
             }),
           ],
